@@ -1,5 +1,6 @@
 import pygame
-from dino_runner.utils.constants import BG, ICON, SCREEN_HEIGHT, SCREEN_WIDTH, TITLE, FPS
+import pyautogui
+from dino_runner.utils.constants import BG, IMAGE_MENU, ICON, SCREEN_HEIGHT, SCREEN_WIDTH, TITLE, FPS
 from dino_runner.components.dinosaur.dinosaur import Dinosaur
 from dino_runner.components.obstacle.obstacleManager import ObstacleManager
 from dino_runner.components.score_menu.text_utils import *
@@ -24,6 +25,8 @@ class Game:
         self.death_count = 0
         self.player_heart_manager = PlayerHeartManager()
         self.power_up_manager = PowerUpManager()
+        self.x_pos_title = 250
+        self.y_pos_title = 120
 
     def run(self):
         self.obstacle_manager.reset_obstacles(self)
@@ -71,6 +74,10 @@ class Game:
             self.x_pos_bg = 0
         self.x_pos_bg -= self.game_speed
 
+    def image_background(self):
+        image_width = IMAGE_MENU.get_width()
+        self.screen.blit(IMAGE_MENU, (self.x_pos_title, self.y_pos_title))
+
     def score(self):
         self.points += 1
 
@@ -98,11 +105,14 @@ class Game:
 
         if death_count == 0:
 
+            self.image_background()
             text, text_rect = get_centered_message('Press any key for Start')
             self.screen.blit(text, text_rect)
+            
 
         elif death_count > 0:
-
+            screenshot = pyautogui.screenshot(region=(50, 50, 400, 300))
+            screenshot.show()
             text, text_rect = get_centered_message('Press any key for Restart')
             score, score_rect = get_centered_message('Your score: '+ str(self.points), height = half_screen_height + 50)
             self.screen.blit(score, score_rect)
