@@ -22,6 +22,7 @@ class ObstacleManager:
 
         elif len(self.obstacles) == 0 and probability > 6 and probability < 9:
             self.obstacles.append(Bird(BIRD))
+            self.obstacles
 
         for obstacle in self.obstacles:
             obstacle.update(game.game_speed, self.obstacles)
