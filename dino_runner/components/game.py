@@ -4,6 +4,7 @@ from dino_runner.components.dinosaur.dinosaur import Dinosaur
 from dino_runner.components.obstacle.obstacleManager import ObstacleManager
 from dino_runner.components.score_menu.text_utils import *
 from dino_runner.components.player_hearts.player_heart_manager import PlayerHeartManager
+from dino_runner.components.powerups.power_up_manager import PowerUpManager
 
 class Game:
     def __init__(self):
@@ -22,10 +23,14 @@ class Game:
         self.running = True
         self.death_count = 0
         self.player_heart_manager = PlayerHeartManager()
+        self.power_up_manager = PowerUpManager()
 
     def run(self):
         self.obstacle_manager.reset_obstacles(self)
         self.player_heart_manager.reset_hearts()
+        self.points = 0
+        self.game_speed = 20
+        self.power_up_manager.reset_power_ups(self.points)
         self.playing = True
         while self.playing:
             self.events()
@@ -43,6 +48,7 @@ class Game:
         user_input = pygame.key.get_pressed()
         self.player.update(user_input)
         self.obstacle_manager.update(self)
+        self.power_up_manager.update(self.points, self.game_speed, self.player)
 
     def draw(self):
         self.clock.tick(FPS)
@@ -52,6 +58,7 @@ class Game:
         self.obstacle_manager.draw(self.screen)
         self.score()
         self.player_heart_manager.draw(self.screen)
+        self.power_up_manager.draw(self.screen)
         pygame.display.update()
         pygame.display.flip()
 
@@ -72,6 +79,7 @@ class Game:
 
         score, score_rect = get_score_element(self.points)
         self.screen.blit(score, score_rect)
+        self.player.check_invincibility(self.screen)
 
     def show_menu(self):
         self.running = True
